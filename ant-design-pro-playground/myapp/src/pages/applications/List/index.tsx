@@ -10,7 +10,7 @@ import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
-import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro/api';
+import { applications, addApplications, updateApplications, removeApplications} from '@/services/ant-design-pro/api';
 
 /**
  * @en-US Add node
@@ -20,7 +20,7 @@ import { rule, addRule, updateRule, removeRule } from '@/services/ant-design-pro
 const handleAdd = async (fields: API.RuleListItem) => {
   const hide = message.loading('正在添加');
   try {
-    await addRule({ ...fields });
+    await addApplications({ ...fields });
     hide();
     message.success('Added successfully');
     return true;
@@ -40,7 +40,7 @@ const handleAdd = async (fields: API.RuleListItem) => {
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('Configuring');
   try {
-    await updateRule({
+    await updateApplications({
       name: fields.name,
       desc: fields.desc,
       key: fields.key,
@@ -66,7 +66,7 @@ const handleRemove = async (selectedRows: API.RuleListItem[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeRule({
+    await removeApplications({
       key: selectedRows.map((row) => row.key),
     });
     hide();
@@ -107,12 +107,12 @@ const TableList: React.FC = () => {
     {
       title: (
         <FormattedMessage
-          id="pages.searchTable.updateForm.ruleName.nameLabel"
-          defaultMessage="Rule name"
+          id="pages.applications.updateForm.ruleName.nameLabel"
+          defaultMessage="Application name"
         />
       ),
       dataIndex: 'name',
-      tip: 'The rule name is the unique key',
+      tip: 'The application name is the unique key',
       render: (dom, entity) => {
         return (
           <a
@@ -127,35 +127,35 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleDesc" defaultMessage="Description" />,
+      title: <FormattedMessage id="pages.applications.titleDesc" defaultMessage="Description" />,
       dataIndex: 'desc',
       valueType: 'textarea',
     },
     {
       title: (
         <FormattedMessage
-          id="pages.searchTable.titleCallNo"
-          defaultMessage="Number of service calls"
+          id="pages.applications.titleCallNo"
+          defaultMessage="Number of application replicas"
         />
       ),
-      dataIndex: 'callNo',
+      dataIndex: 'callOn',
       sorter: true,
       hideInForm: true,
       renderText: (val: string) =>
         `${val}${intl.formatMessage({
-          id: 'pages.searchTable.tenThousand',
+          id: 'pages.applications.tenThousand',
           defaultMessage: ' 万 ',
         })}`,
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleStatus" defaultMessage="Status" />,
+      title: <FormattedMessage id="pages.applications.titleStatus" defaultMessage="Status" />,
       dataIndex: 'status',
       hideInForm: true,
       valueEnum: {
         0: {
           text: (
             <FormattedMessage
-              id="pages.searchTable.nameStatus.default"
+              id="pages.applications.nameStatus.default"
               defaultMessage="Shut down"
             />
           ),
@@ -163,20 +163,20 @@ const TableList: React.FC = () => {
         },
         1: {
           text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.running" defaultMessage="Running" />
+            <FormattedMessage id="pages.applications.nameStatus.running" defaultMessage="Running" />
           ),
           status: 'Processing',
         },
         2: {
           text: (
-            <FormattedMessage id="pages.searchTable.nameStatus.online" defaultMessage="Online" />
+            <FormattedMessage id="pages.applications.nameStatus.online" defaultMessage="Online" />
           ),
           status: 'Success',
         },
         3: {
           text: (
             <FormattedMessage
-              id="pages.searchTable.nameStatus.abnormal"
+              id="pages.applications.nameStatus.abnormal"
               defaultMessage="Abnormal"
             />
           ),
@@ -187,7 +187,7 @@ const TableList: React.FC = () => {
     {
       title: (
         <FormattedMessage
-          id="pages.searchTable.titleUpdatedAt"
+          id="pages.applications.titleUpdatedAt"
           defaultMessage="Last scheduled time"
         />
       ),
@@ -204,7 +204,7 @@ const TableList: React.FC = () => {
             <Input
               {...rest}
               placeholder={intl.formatMessage({
-                id: 'pages.searchTable.exception',
+                id: 'pages.applications.exception',
                 defaultMessage: 'Please enter the reason for the exception!',
               })}
             />
@@ -214,7 +214,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: <FormattedMessage id="pages.searchTable.titleOption" defaultMessage="Operating" />,
+      title: <FormattedMessage id="pages.applications.titleOption" defaultMessage="Operating" />,
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
@@ -225,11 +225,11 @@ const TableList: React.FC = () => {
             setCurrentRow(record);
           }}
         >
-          <FormattedMessage id="pages.searchTable.config" defaultMessage="Configuration" />
+          <FormattedMessage id="pages.applications.config" defaultMessage="Configuration" />
         </a>,
         <a key="subscribeAlert" href="https://procomponents.ant.design/">
           <FormattedMessage
-            id="pages.searchTable.subscribeAlert"
+            id="pages.applications.subscribeAlert"
             defaultMessage="Subscribe to alerts"
           />
         </a>,
@@ -241,7 +241,7 @@ const TableList: React.FC = () => {
     <PageContainer>
       <ProTable<API.RuleListItem, API.PageParams>
         headerTitle={intl.formatMessage({
-          id: 'pages.searchTable.title',
+          id: 'pages.applications.title',
           defaultMessage: 'Enquiry form',
         })}
         actionRef={actionRef}
@@ -257,10 +257,10 @@ const TableList: React.FC = () => {
               handleModalVisible(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+            <PlusOutlined /> <FormattedMessage id="pages.applications.new" defaultMessage="New" />
           </Button>,
         ]}
-        request={rule}
+        request={addApplications}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
@@ -272,17 +272,17 @@ const TableList: React.FC = () => {
         <FooterToolbar
           extra={
             <div>
-              <FormattedMessage id="pages.searchTable.chosen" defaultMessage="Chosen" />{' '}
+              <FormattedMessage id="pages.applications.chosen" defaultMessage="Chosen" />{' '}
               <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              <FormattedMessage id="pages.searchTable.item" defaultMessage="项" />
+              <FormattedMessage id="pages.applications.item" defaultMessage="项" />
               &nbsp;&nbsp;
               <span>
                 <FormattedMessage
-                  id="pages.searchTable.totalServiceCalls"
+                  id="pages.applications.totalServiceCalls"
                   defaultMessage="Total number of service calls"
                 />{' '}
                 {selectedRowsState.reduce((pre, item) => pre + item.callNo!, 0)}{' '}
-                <FormattedMessage id="pages.searchTable.tenThousand" defaultMessage="万" />
+                <FormattedMessage id="pages.applications.tenThousand" defaultMessage="万" />
               </span>
             </div>
           }
@@ -295,13 +295,13 @@ const TableList: React.FC = () => {
             }}
           >
             <FormattedMessage
-              id="pages.searchTable.batchDeletion"
+              id="pages.applications.batchDeletion"
               defaultMessage="Batch deletion"
             />
           </Button>
           <Button type="primary">
             <FormattedMessage
-              id="pages.searchTable.batchApproval"
+              id="pages.applications.batchApproval"
               defaultMessage="Batch approval"
             />
           </Button>
@@ -309,7 +309,7 @@ const TableList: React.FC = () => {
       )}
       <ModalForm
         title={intl.formatMessage({
-          id: 'pages.searchTable.createForm.newRule',
+          id: 'pages.applications.createForm.newRule',
           defaultMessage: 'New rule',
         })}
         width="400px"
@@ -331,7 +331,7 @@ const TableList: React.FC = () => {
               required: true,
               message: (
                 <FormattedMessage
-                  id="pages.searchTable.ruleName"
+                  id="pages.applications.ruleName"
                   defaultMessage="Rule name is required"
                 />
               ),
