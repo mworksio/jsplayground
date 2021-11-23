@@ -51,7 +51,7 @@ export async function applications (
   },
   options?: { [key: string]: any },
 ) {
-  return request<API.RuleList>('/api/applications', {
+return request<API.RuleList>('/api/applications', {
     method: 'GET',
     params: {
       ...params,

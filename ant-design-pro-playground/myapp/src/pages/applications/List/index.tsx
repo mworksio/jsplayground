@@ -138,7 +138,7 @@ const TableList: React.FC = () => {
           defaultMessage="Number of application replicas"
         />
       ),
-      dataIndex: 'callOn',
+      dataIndex: 'callNo',
       sorter: true,
       hideInForm: true,
       renderText: (val: string) =>
@@ -260,7 +260,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id="pages.applications.new" defaultMessage="New" />
           </Button>,
         ]}
-        request={addApplications}
+        request={applications}
         columns={columns}
         rowSelection={{
           onChange: (_, selectedRows) => {
