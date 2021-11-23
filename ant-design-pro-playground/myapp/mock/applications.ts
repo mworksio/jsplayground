@@ -4,12 +4,12 @@ import moment from 'moment';
 import { parse } from 'url';
 
 // mock tableListDataSource
-const genList = (current: number, pageSize: number) => {
-  const tableListDataSource: API.RuleListItem[] = [];
+const genApplicationList = (current: number, pageSize: number) => {
+  const appListDataSource: API.RuleListItem[] = [];
 
   for (let i = 0; i < pageSize; i += 1) {
     const index = (current - 1) * 10 + i;
-    tableListDataSource.push({
+    appListDataSource.push({
       key: index,
       disabled: i % 6 === 0,
       href: 'https://ant.design',
@@ -17,9 +17,9 @@ const genList = (current: number, pageSize: number) => {
         'https://gw.alipayobjects.com/zos/rmsportal/eeHMaZBwmTvLdIwMfBpg.png',
         'https://gw.alipayobjects.com/zos/rmsportal/udxAbMEhpwthVVcjLXik.png',
       ][i % 2],
-      name: `TradeCode ${index}`,
-      owner: '曲丽丽',
-      desc: '这是一段描述',
+      name: `Nginx-${index}`,
+      owner: 'mlycore',
+      desc: 'Biz Nginx',
       callNo: Math.floor(Math.random() * 10),
       status: Math.floor(Math.random() * 10) % 4,
       updatedAt: moment().format('YYYY-MM-DD'),
@@ -27,13 +27,13 @@ const genList = (current: number, pageSize: number) => {
       progress: Math.ceil(Math.random() * 100),
     });
   }
-  tableListDataSource.reverse();
-  return tableListDataSource;
+  appListDataSource.reverse();
+  return appListDataSource;
 };
 
-let tableListDataSource = genList(1, 100);
+let appListDataSource = genApplicationList(1, 100);
 
-function getRule(req: Request, res: Response, u: string) {
+function getApplications(req: Request, res: Response, u: string) {
   let realUrl = u;
   if (!realUrl || Object.prototype.toString.call(realUrl) !== '[object String]') {
     realUrl = req.url;
@@ -45,7 +45,7 @@ function getRule(req: Request, res: Response, u: string) {
       filter: any;
     };
 
-  let dataSource = [...tableListDataSource].slice(
+  let dataSource = [...appListDataSource].slice(
     ((current as number) - 1) * (pageSize as number),
     (current as number) * (pageSize as number),
   );
@@ -95,7 +95,7 @@ function getRule(req: Request, res: Response, u: string) {
   }
   const result = {
     data: dataSource,
-    total: tableListDataSource.length,
+    total: appListDataSource.length,
     success: true,
     pageSize,
     current: parseInt(`${params.current}`, 10) || 1,
@@ -104,7 +104,7 @@ function getRule(req: Request, res: Response, u: string) {
   return res.json(result);
 }
 
-function postRule(req: Request, res: Response, u: string, b: Request) {
+function postApplications(req: Request, res: Response, u: string, b: Request) {
   let realUrl = u;
   if (!realUrl || Object.prototype.toString.call(realUrl) !== '[object String]') {
     realUrl = req.url;
@@ -116,13 +116,13 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
   switch (method) {
     /* eslint no-case-declarations:0 */
     case 'delete':
-      tableListDataSource = tableListDataSource.filter((item) => key.indexOf(item.key) === -1);
+      appListDataSource = appListDataSource.filter((item) => key.indexOf(item.key) === -1);
       break;
     case 'post':
       (() => {
         const i = Math.ceil(Math.random() * 10000);
         const newRule: API.RuleListItem = {
-          key: tableListDataSource.length,
+          key: appListDataSource.length,
           href: 'https://ant.design',
           avatar: [
             'https://gw.alipayobjects.com/zos/rmsportal/eeHMaZBwmTvLdIwMfBpg.png',
@@ -131,13 +131,13 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
           name,
           owner: '曲丽丽',
           desc,
-          callNo: Math.floor(Math.random() * 1000),
+          callNo: Math.floor(Math.random() * 10),
           status: Math.floor(Math.random() * 10) % 2,
           updatedAt: moment().format('YYYY-MM-DD'),
           createdAt: moment().format('YYYY-MM-DD'),
           progress: Math.ceil(Math.random() * 100),
         };
-        tableListDataSource.unshift(newRule);
+        appListDataSource.unshift(newRule);
         return res.json(newRule);
       })();
       return;
@@ -145,7 +145,7 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
     case 'update':
       (() => {
         let newRule = {};
-        tableListDataSource = tableListDataSource.map((item) => {
+        appListDataSource = appListDataSource.map((item) => {
           if (item.key === key) {
             newRule = { ...item, desc, name };
             return { ...item, desc, name };
@@ -160,9 +160,9 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
   }
 
   const result = {
-    list: tableListDataSource,
+    list: appListDataSource,
     pagination: {
-      total: tableListDataSource.length,
+      total: appListDataSource.length,
     },
   };
 
@@ -170,6 +170,6 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
 }
 
 export default {
-  'GET /api/applications': getRule,
-  'POST /api/applications': postRule,
+  'GET /api/applications': getApplications,
+  'POST /api/applications': postApplications,
 };
